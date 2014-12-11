@@ -96,7 +96,7 @@ module.exports = function () {
       this.wiredepExclusions.push('/bootstrap\\.js/');
     }
   }
-  if(this.props.cssPreprocessor.key !== 'css') {
+  if(this.props.cssPreprocessor.key !== 'none') {
     this.wiredepExclusions.push('/bootstrap\\.css/');
     this.wiredepExclusions.push('/foundation\\.css/');
   }

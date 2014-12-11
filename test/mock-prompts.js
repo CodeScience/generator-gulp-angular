@@ -21,7 +21,8 @@ var questions = [
   'router',
   'ui',
   'bootstrapComponents',
-  'cssPreprocessor'
+  'cssPreprocessor',
+  'jsPreprocessor'
 ];
 
 var model = {};

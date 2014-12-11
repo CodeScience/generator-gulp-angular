@@ -48,7 +48,7 @@ describe('gulp-angular generator', function () {
   var expectedGulpContent = [
     ['gulpfile.js', /gulp\.task\(\'default\'/],
     ['gulp/build.js', /gulp\.task\(\'styles\'/],
-    ['gulp/build.js', /gulp\.task\(\'jshint\'/],
+    ['gulp/build.js', /gulp\.task\(\'scripts\'/],
     ['gulp/build.js', /gulp\.task\(\'partials\'/],
     ['gulp/build.js', /gulp\.task\(\'html\'/],
     ['gulp/build.js', /gulp\.task\(\'images\'/],
@@ -442,7 +442,7 @@ describe('gulp-angular generator', function () {
     it('should add dependency for Foundation with CSS', function (done) {
       helpers.mockPrompt(gulpAngular, _.assign(defaults, {
         ui: prompts.ui.values.foundation,
-        cssPreprocessor: prompts.cssPreprocessor.values.css
+        cssPreprocessor: prompts.cssPreprocessor.values.none
       }));
 
       gulpAngular.run({}, function() {
@@ -543,7 +543,7 @@ describe('gulp-angular generator', function () {
     it('should add dependency for Bootstrap with CSS', function (done) {
       helpers.mockPrompt(gulpAngular, _.assign(defaults, {
         ui: prompts.ui.values.bootstrap,
-        cssPreprocessor: prompts.cssPreprocessor.values.css
+        cssPreprocessor: prompts.cssPreprocessor.values.none
       }));
 
       gulpAngular.run({}, function() {
@@ -562,7 +562,7 @@ describe('gulp-angular generator', function () {
           ['package.json', libRegexp('gulp-less', prompts.cssPreprocessor.values.less.version)],
           ['package.json', libRegexp('gulp-sass', prompts.cssPreprocessor.values['node-sass'].version)],
           ['package.json', libRegexp('gulp-ruby-sass', prompts.cssPreprocessor.values['ruby-sass'].version)],
-          ['gulp/wiredep.js', /exclude:.*?\/bootstrap\\\.css\/.*?/]
+          ['gulp/wiredep.js', /exclude:.*\/bootstrap\\\.css\/.*/]
         ]);
 
         done();
@@ -597,7 +597,7 @@ describe('gulp-angular generator', function () {
         assert.file(expectedFile);
 
         assert.noFileContent([
-          ['gulp/wiredep.js', /\/bootstrap.js\//]
+          ['gulp/wiredep.js', /\/bootstrap\\\.js\//]
         ]);
 
         done();
@@ -636,7 +636,7 @@ describe('gulp-angular generator', function () {
 
         assert.fileContent([].concat(expectedGulpContent, [
           // Check package.json
-          ['package.json', libRegexp('gulp-sass', prompts.cssPreprocessor.values['node-sass'].npm['gulp-sass'])]
+          ['package.json', libRegexp('gulp-sass', prompts.cssPreprocessor.values['node-sass'].version)]
         ]));
 
         assert.noFile('src/app/vendor.*');
@@ -648,7 +648,7 @@ describe('gulp-angular generator', function () {
   describe('with option: [None UI Framework, Ruby SASS]', function () {
     it('should add index style', function (done) {
       helpers.mockPrompt(gulpAngular, _.assign(defaults, {
-        ui: prompts.ui.values['none'],
+        ui: prompts.ui.values.none,
         cssPreprocessor: prompts.cssPreprocessor.values['ruby-sass']
       }));
 
@@ -657,7 +657,7 @@ describe('gulp-angular generator', function () {
 
         assert.fileContent([].concat(expectedGulpContent, [
           // Check package.json
-          ['package.json', libRegexp('gulp-ruby-sass', prompts.cssPreprocessor.values['ruby-sass'].npm['gulp-ruby-sass'])]
+          ['package.json', libRegexp('gulp-ruby-sass', prompts.cssPreprocessor.values['ruby-sass'].version)]
         ]));
 
         assert.noFile('src/app/vendor.*');
@@ -712,13 +712,102 @@ describe('gulp-angular generator', function () {
     it('should add index style', function (done) {
       helpers.mockPrompt(gulpAngular, _.assign(defaults, {
         ui: prompts.ui.values.none,
-        cssPreprocessor: prompts.cssPreprocessor.values.css
+        cssPreprocessor: prompts.cssPreprocessor.values.none
       }));
 
       gulpAngular.run({}, function() {
         assert.file(expectedFile);
 
         assert.noFile('src/app/vendor.*');
+
+        done();
+      });
+    });
+  });
+  describe('with option: [None JS Preprocessor]', function () {
+    it('should not add browerify and inject js files from src', function (done) {
+      helpers.mockPrompt(gulpAngular, _.assign(defaults, {
+        jsPreprocessor: prompts.jsPreprocessor.values.none
+      }));
+
+      gulpAngular.run({}, function() {
+        assert.file(expectedFile);
+
+        assert.fileContent([].concat(expectedGulpContent, [
+          ['gulp/build.js', /gulp\.task\(\'injector:js\', \[\'scripts\'.*\]/],
+          ['gulp/build.js', /gulp\.task\(\'injector:js\'[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\'src\/{app,components}\/\*\*\/\*\.js\'/]
+        ]));
+
+        assert.noFileContent([
+          ['gulp/build.js', /gulp\.task\(\'browserify\'/],
+          ['package.json', /gulp-browserify/]
+        ]);
+
+        done();
+      });
+    });
+  });
+  describe('with option: [CoffeeScript]', function () {
+    it('should not add browerify and add gulp-coffee', function (done) {
+      helpers.mockPrompt(gulpAngular, _.assign(defaults, {
+        jsPreprocessor: prompts.jsPreprocessor.values.coffee
+      }));
+
+      gulpAngular.run({}, function() {
+        assert.file(expectedFile);
+
+        assert.fileContent([].concat(expectedGulpContent, [
+          ['gulp/build.js', /gulp\.task\(\'injector:js\', \[\'scripts\'.*\]/],
+          ['gulp/build.js', /gulp\.task\(\'injector:js\'[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\'{src,\.tmp}\/{app,components}\/\*\*\/\*\.js\'/],
+          ['package.json', /gulp-coffee/]
+        ]));
+
+        assert.noFileContent([
+          ['gulp/build.js', /gulp\.task\(\'browserify\'/],
+          ['package.json', /gulp-browserify/]
+        ]);
+
+        done();
+      });
+    });
+  });
+  describe('with option: [6to5]', function () {
+    it('should add browerify and gulp-6to5', function (done) {
+      helpers.mockPrompt(gulpAngular, _.assign(defaults, {
+        jsPreprocessor: prompts.jsPreprocessor.values['6to5']
+      }));
+
+      gulpAngular.run({}, function() {
+        assert.file(expectedFile);
+
+        assert.fileContent([].concat(expectedGulpContent, [
+          ['gulp/build.js', /gulp\.task\(\'injector:js\', \[\'browserify\'.*\]/],
+          ['gulp/build.js', /gulp\.task\(\'browserify\'/],
+          ['gulp/build.js', /gulp\.task\(\'injector:js\'[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\'\.tmp\/{app,components}\/\*\*\/\*\.js\'/],
+          ['package.json', /gulp-6to5/],
+          ['package.json', /gulp-browserify/]
+        ]));
+
+        done();
+      });
+    });
+  });
+  describe('with option: [Traceur]', function () {
+    it('should add browerify and gulp-traceur', function (done) {
+      helpers.mockPrompt(gulpAngular, _.assign(defaults, {
+        jsPreprocessor: prompts.jsPreprocessor.values.traceur
+      }));
+
+      gulpAngular.run({}, function() {
+        assert.file(expectedFile);
+
+        assert.fileContent([].concat(expectedGulpContent, [
+          ['gulp/build.js', /gulp\.task\(\'injector:js\', \[\'browserify\'.*\]/],
+          ['gulp/build.js', /gulp\.task\(\'browserify\'/],
+          ['gulp/build.js', /gulp\.task\(\'injector:js\'[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\'\.tmp\/{app,components}\/\*\*\/\*\.js\'/],
+          ['package.json', /gulp-traceur/],
+          ['package.json', /gulp-browserify/]
+        ]));
 
         done();
       });
