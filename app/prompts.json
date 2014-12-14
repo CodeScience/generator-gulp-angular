@@ -1,5 +1,15 @@
 [
   {
+    "type": "string",
+    "name": "apexPage",
+    "message": "What is the name of your Apex Page?"
+  },
+  {
+    "type": "string",
+    "name": "staticResource",
+    "message": "What is the name of your Static Resource?"
+  },  
+  {
     "type": "list",
     "name": "angularVersion",
     "message": "Which version of Angular do you want?",
