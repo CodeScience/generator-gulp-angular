@@ -25,6 +25,12 @@ var GulpAngularGenerator = yeoman.generators.Base.extend({
         chalk.red('Welcome!') + '\n' +
         chalk.yellow('You\'re using the fantastic generator for scaffolding an application with Angular and Gulp!')
       ));
+
+      //Print out current base path
+      this.log(yosay(
+        chalk.red('Path:') + '\n' +
+        chalk.yellow( this.appName )
+      ));
     }
   },
 

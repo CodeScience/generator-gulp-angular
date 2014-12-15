@@ -12,6 +12,9 @@
     "protractor.conf.js",
     "e2e/main.spec.js"
   ],
+  "staticResourceMeta": [
+    "meta.xml"
+  ],
   "dotFiles": [
     "bowerrc",
     "editorconfig",

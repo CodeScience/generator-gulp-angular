@@ -117,7 +117,8 @@ gulp.task('html', ['wiredep', 'injector:css', 'injector:js', 'partials'], functi
       addRootSlash: false
     }))
     .pipe(assets = $.useref.assets())
-    .pipe($.rev())
+    // Remove revistions from file names
+    // .pipe($.rev())
     .pipe(jsFilter)
     .pipe($.ngAnnotate())
     .pipe($.uglify({preserveComments: $.uglifySaveLicense}))
@@ -129,7 +130,7 @@ gulp.task('html', ['wiredep', 'injector:css', 'injector:js', 'partials'], functi
     .pipe(cssFilter.restore())
     .pipe(assets.restore())
     .pipe($.useref())
-    .pipe($.revReplace())
+    // .pipe($.revReplace())
     .pipe(htmlFilter)
     .pipe($.minifyHtml({
       empty: true,
@@ -137,6 +138,11 @@ gulp.task('html', ['wiredep', 'injector:css', 'injector:js', 'partials'], functi
       quotes: true
     }))
     .pipe(htmlFilter.restore())
+
+    //Test Extra build process
+    .pipe(gulp.dest('../resource-bundles/<%= props.staticResource %>.resource'))
+    // .pipe($.size({ title: 'MyStaticTest/', showFiles: true }))
+
     .pipe(gulp.dest('dist/'))
     .pipe($.size({ title: 'dist/', showFiles: true }));
 });
@@ -148,6 +154,7 @@ gulp.task('images', function () {
       progressive: true,
       interlaced: true
     }))
+    .pipe(gulp.dest('../resource-bundles/<%= props.staticResource %>.resource/assets/images/'))
     .pipe(gulp.dest('dist/assets/images/'));
 });
 
@@ -155,6 +162,7 @@ gulp.task('fonts', function () {
   return gulp.src($.mainBowerFiles())
     .pipe($.filter('**/*.{eot,svg,ttf,woff}'))
     .pipe($.flatten())
+    .pipe(gulp.dest('../resource-bundles/<%= props.staticResource %>.resource/fonts/'))
     .pipe(gulp.dest('dist/fonts/'));
 });
 

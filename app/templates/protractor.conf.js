@@ -1,5 +1,6 @@
 // An example configuration file.
 exports.config = {
+  directConnect: true,
   // The address of a running selenium server.
   //seleniumAddress: 'http://localhost:4444/wd/hub',
   //seleniumServerJar: deprecated, this should be set on node_modules/protractor/config.json
