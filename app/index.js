@@ -28,8 +28,8 @@ var GulpAngularGenerator = yeoman.generators.Base.extend({
 
       //Print out current base path
       this.log(yosay(
-        chalk.red('Path:') + '\n' +
-        chalk.yellow( this.appName )
+        chalk.red('Powerd by') + '\n' +
+        chalk.yellow( 'CodeScience!' )
       ));
     }
   },
