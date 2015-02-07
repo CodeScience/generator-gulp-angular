@@ -1,5 +1,5 @@
 {
-  "name": "generator-CodeScience-gulp-angular",
+  "name": "generator-cs-angular-health",
   "version": "0.7.3",
   "description": "Yeoman generator for AngularJS with GulpJS by CodeScience",
   "keywords": "yeoman-generator, angular, gulp, codescience",
