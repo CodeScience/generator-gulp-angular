@@ -140,7 +140,7 @@ gulp.task('html', ['wiredep', 'injector:css', 'injector:js', 'partials'], functi
     .pipe(htmlFilter.restore())
 
     //Test Extra build process
-    .pipe(gulp.dest('../resource-bundles/<%= props.staticResource %>.resource'))
+    .pipe(gulp.dest('../../resource-bundles/<%= props.staticResource %>.resource'))
     // .pipe($.size({ title: 'MyStaticTest/', showFiles: true }))
 
     .pipe(gulp.dest('dist/'))
@@ -154,7 +154,7 @@ gulp.task('images', function () {
       progressive: true,
       interlaced: true
     }))
-    .pipe(gulp.dest('../resource-bundles/<%= props.staticResource %>.resource/assets/images/'))
+    .pipe(gulp.dest('../../resource-bundles/<%= props.staticResource %>.resource/assets/images/'))
     .pipe(gulp.dest('dist/assets/images/'));
 });
 
@@ -162,7 +162,7 @@ gulp.task('fonts', function () {
   return gulp.src($.mainBowerFiles())
     .pipe($.filter('**/*.{eot,svg,ttf,woff}'))
     .pipe($.flatten())
-    .pipe(gulp.dest('../resource-bundles/<%= props.staticResource %>.resource/fonts/'))
+    .pipe(gulp.dest('../../resource-bundles/<%= props.staticResource %>.resource/fonts/'))
     .pipe(gulp.dest('dist/fonts/'));
 });
 
